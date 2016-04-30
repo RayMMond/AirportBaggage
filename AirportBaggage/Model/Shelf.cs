@@ -36,6 +36,7 @@ namespace AirportBaggage.Model
             BackgroundImage = DrawHelper.DrawShelf(Size, Color.FromArgb((int)(Opacity * 255), Color));
             //BorderStyle = BorderStyle.FixedSingle;
             Initialize();
+            //SetStyle(ControlStyles.Opaque | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
         }
         #endregion
 
@@ -71,6 +72,16 @@ namespace AirportBaggage.Model
                 }
             }
         }
+
+        public void SetFrameHighlight(int row, int col, Color color)
+        {
+            frames[row, col].SetBorderColor(color);
+        }
+
+        public void ClearFrameHighlight(int row, int col)
+        {
+            frames[row, col].SetBorderColor(Color.Transparent);
+        }
         #endregion
 
         #region 私有方法
@@ -96,7 +107,6 @@ namespace AirportBaggage.Model
         {
             BaggageDequeued(this, new BaggageEventArgs(e.Baggage));
         }
-
         #endregion
     }
 

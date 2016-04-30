@@ -130,6 +130,11 @@ namespace AirportBaggage
             }
             return null;
         }
+
+        public int GetShelfNumber()
+        {
+           return frames.Where(f => f.Times.Count < FrameCount).ElementAt(0).Location.Shelf;
+        }
         #endregion
 
         #region 私有方法
@@ -167,6 +172,21 @@ namespace AirportBaggage
         public int Shelf { get; set; }
         public int Row { get; set; }
         public int Column { get; set; }
+    }
+
+    public class LogicLocationEventArgs : EventArgs
+    {
+        #region 构造
+        public LogicLocationEventArgs(LogicLocation location) : base()
+        {
+            Location = location;
+        }
+        #endregion
+
+        #region 属性
+        public LogicLocation Location { get; set; }
+        #endregion
+
     }
     #endregion
 

@@ -83,6 +83,12 @@
     <Compile Include="Model\Stacker.Designer.cs">
       <DependentUpon>Stacker.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\StorageStation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Model\StorageStation.Designer.cs">
+      <DependentUpon>StorageStation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">

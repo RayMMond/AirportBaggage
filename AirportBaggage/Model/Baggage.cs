@@ -16,6 +16,7 @@ namespace AirportBaggage.Model
         private ToolTip toolTip;
         private string flight;
         private int number;
+        private Color oldColor;
         #endregion
 
         #region 构造
@@ -32,7 +33,7 @@ namespace AirportBaggage.Model
             toolTip.UseAnimation = true;
             toolTip.UseFading = true;
             Size = new Size(10, 10);
-            Color = BackColor = color;
+            Color = color;
             BorderStyle = BorderStyle.FixedSingle;
             Name = flight + "_" + number.ToString();
         }
@@ -80,15 +81,16 @@ namespace AirportBaggage.Model
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
+            oldColor = Color;
             if (!Focused)
-                Color = Color.Blue;
+                Color = Color.Red;
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
             if (!Focused)
-                Color = Color.Black;
+                Color = oldColor;
         }
 
         protected override void OnGotFocus(EventArgs e)

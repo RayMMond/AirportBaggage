@@ -18,6 +18,7 @@ namespace AirportBaggage.Model
         #endregion
 
         #region 构造
+        public ModelBase() : this(0, 0, 1.0) { }
         public ModelBase(int x, int y, double opacity)
         {
             Location = new Point(x, y);
@@ -53,6 +54,17 @@ namespace AirportBaggage.Model
         {
             Location += size;
         }
+
+        //protected override CreateParams CreateParams
+        //{
+        //    get
+        //    {
+        //        CreateParams cp = base.CreateParams;
+        //        // 开启 WS_EX_TRANSPARENT,使控件支持透明
+        //        cp.ExStyle |= 0x00000020;
+        //        return cp;
+        //    }
+        //}
         #endregion
 
         #region 虚拟方法
