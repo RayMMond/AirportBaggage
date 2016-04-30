@@ -57,6 +57,7 @@ namespace AirportBaggage.Model
                 return;
             }
 
+            bag = b;
         }
         #endregion
 
