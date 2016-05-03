@@ -62,6 +62,11 @@ namespace AirportBaggage.Model
             frames[x, y].Dequeue();
         }
 
+        public bool OwnBaggage(int x, int y, string flight)
+        {
+            return frames[x, y].OwnBaggage(flight);
+        }
+
         public void ChangeFlight(string oldFlight, string newFlight)
         {
             for (int i = 0; i < 8; i++)
@@ -107,6 +112,7 @@ namespace AirportBaggage.Model
         {
             BaggageDequeued(this, new BaggageEventArgs(e.Baggage));
         }
+
         #endregion
     }
 

@@ -56,6 +56,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="StringHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="OpaLayer.resx">

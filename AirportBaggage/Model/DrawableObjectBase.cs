@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace AirportBaggage.Model
 {
-    public partial class ModelBase : UserControl
+    public partial class ModelBase : UserControl, INext
     {
         #region 私有字段
         private double opacity = 1.0;

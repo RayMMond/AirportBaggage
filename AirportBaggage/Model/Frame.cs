@@ -78,6 +78,18 @@ namespace AirportBaggage.Model
             baggages.Enqueue(bag);
         }
 
+        public bool OwnBaggage(string flight)
+        {
+            if (baggages.Count > 0)
+            {
+                if (baggages.Peek().Flight == flight)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void ChangeFlight(string oldFlight, string newFlight)
         {
             foreach (var bag in baggages)

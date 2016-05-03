@@ -34,6 +34,7 @@ namespace AirportBaggage.Model
             Size = new Size(20, 15);
             Color = color;
             Speed = 8;
+            Rearranging = false;
             ReadyForCollecting = true;
         }
         #endregion
@@ -87,10 +88,26 @@ namespace AirportBaggage.Model
         }
 
         public LogicLocation TargetLocation { get; set; }
+
+        public Point OriginalLocation
+        {
+            get
+            {
+                return orientLocation;
+            }
+            set
+            {
+                orientLocation = value;
+            }
+        }
+
+        public bool Rearranging { get; set; }
         #endregion
 
         #region 事件
         public event EventHandler<LogicLocationEventArgs> TargetPointReached;
+
+        public event EventHandler OriginalPointReached;
         #endregion
 
         #region 方法
@@ -101,11 +118,9 @@ namespace AirportBaggage.Model
                 MessageBox.Show("堆垛机：" + Name + "抓取包裹为空！");
                 return;
             }
-            orientLocation = Location;
             bag = b;
             bag.Location = new Point(5, 2);
             Controls.Add(bag);
-            ReadyForCollecting = false;
         }
 
         public Baggage ReleaseBag()
@@ -120,7 +135,7 @@ namespace AirportBaggage.Model
         {
             TargetPoint = Point.Empty;
         }
-
+        
         public override void Next()
         {
             if (TargetPoint != Point.Empty)
@@ -134,7 +149,7 @@ namespace AirportBaggage.Model
                     TargetPointReached(this, new LogicLocationEventArgs(TargetLocation));
                 }
             }
-            if (IsEmpty)
+            else
             {
                 if (orientLocation != Location)
                 {
@@ -142,6 +157,10 @@ namespace AirportBaggage.Model
                 }
                 else
                 {
+                    if (OriginalPointReached != null)
+                    {
+                        OriginalPointReached(this, null);
+                    }
                     readyForCollection = true;
                 }
             }

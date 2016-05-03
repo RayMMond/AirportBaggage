@@ -15,6 +15,7 @@ namespace AirportBaggage.Model
         #region 字段
         //private ToolTip toolTip;
         private List<Baggage> baggages;
+        private int capacity = 3;
         #endregion
 
         #region 构造
@@ -28,7 +29,7 @@ namespace AirportBaggage.Model
             //toolTip = new ToolTip(components);
             //toolTip.UseAnimation = true;
             //toolTip.UseFading = true;
-            baggages = new List<Baggage>(3);
+            baggages = new List<Baggage>(capacity);
             Size = new Size(50, 15);
             Color = BackColor = color;
             WaitingForCollection = false;
@@ -80,7 +81,7 @@ namespace AirportBaggage.Model
                 MessageBox.Show("包裹为空！");
                 return;
             }
-            if (Count >= 3)
+            if (Count >= capacity)
             {
                 MessageBox.Show("入库台已满！");
                 return;
@@ -97,7 +98,7 @@ namespace AirportBaggage.Model
                 MessageBox.Show("包裹为空！");
                 return;
             }
-            if (Count >= 3)
+            if (Count >= capacity)
             {
                 MessageBox.Show("入库台已满！");
                 return;

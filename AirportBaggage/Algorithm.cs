@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AirportBaggage.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -8,10 +9,11 @@ using System.Windows.Forms;
 
 namespace AirportBaggage
 {
-    public class Algorithm
+    public class Algorithm: INext
     {
         #region 私有字段
         List<FrameModel> frames;
+        private DateTime checkTime = DateTime.Now;
         #endregion
 
         #region 构造
@@ -20,6 +22,8 @@ namespace AirportBaggage
             ShelfCount = shelfCount;
             ShelfSize = size;
             FrameCount = frameCount;
+            NeedRearrangeLocation = new Queue<LogicLocation>();
+            FlightTime = new Dictionary<string, DateTime>();
             frames = new List<FrameModel>();
             for (int i = 0; i < ShelfCount; i++)
             {
@@ -46,23 +50,27 @@ namespace AirportBaggage
 
         public Dictionary<string, DateTime> FlightTime { get; set; }
 
-        public LogicLocation NeedRearrange { get; set; }
+        public Dictionary<string, int> FlightBaggageCount { get; set; }
+
+        public Queue<LogicLocation> NeedRearrangeLocation { get; set; }
         #endregion
 
         #region 事件
+        public event EventHandler<LogicLocationEventArgs> Rearrange;
 
+        public event EventHandler<string> DepartureTimeReached;
         #endregion
 
         #region 方法
 
-        public LogicLocation Push(string flight)
+        public LogicLocation Push(string flight, int shelf)
         {
             if (string.IsNullOrEmpty(flight))
             {
                 MessageBox.Show("航班号不存在！");
                 return null;
             }
-            var frameNotFull = frames.Where(f => f.Times.Count < FrameCount);
+            var frameNotFull = frames.Where(f => f.Times.Count < FrameCount && f.Location.Shelf == shelf);
             foreach (var frame in frameNotFull)
             {
                 if (frame.Times.Count == 0)
@@ -106,20 +114,20 @@ namespace AirportBaggage
 
                 var f = frameNotFull.OrderBy(x => x.Times.Count).ToList()[0];
                 f.Times.Enqueue(flight);
-                NeedRearrange = f.Location;
+                NeedRearrangeLocation.Enqueue(f.Location);
                 return f.Location;
 
             }
         }
 
-        public LogicLocation Pop(string flight)
+        public LogicLocation Pop(string flight, int shelf)
         {
             if (string.IsNullOrEmpty(flight))
             {
                 MessageBox.Show("航班号不存在！");
                 return null;
             }
-            var frameNotEmpty = frames.Where(x => x.Times.Count > 0);
+            var frameNotEmpty = frames.Where(x => x.Times.Count > 0 && x.Location.Shelf == shelf);
             foreach (var frame in frameNotEmpty)
             {
                 if (frame.Times.Peek() == flight)
@@ -131,9 +139,102 @@ namespace AirportBaggage
             return null;
         }
 
+        public void Pop(LogicLocation location)
+        {
+            var frameNotEmpty = frames.Where(x => x.Location == location);
+            foreach (var frame in frameNotEmpty)
+            {
+                frame.Times.Dequeue();
+                break;
+            }
+
+        }
+
+        public LogicLocation Peek(string flight, int shelf)
+        {
+            if (string.IsNullOrEmpty(flight))
+            {
+                MessageBox.Show("航班号不存在！");
+                return null;
+            }
+            var frameNotEmpty = frames.Where(x => x.Times.Count > 0 && x.Location.Shelf == shelf);
+            foreach (var frame in frameNotEmpty)
+            {
+                if (frame.Times.Peek() == flight)
+                {
+                    return frame.Location;
+                }
+            }
+            return null;
+        }
+
         public int GetShelfNumber()
         {
            return frames.Where(f => f.Times.Count < FrameCount).ElementAt(0).Location.Shelf;
+        }
+
+        public bool CanPop(string flight, int shelf)
+        {
+            var temp = frames.Where(x => x.Times.Count > 0 && x.Location.Shelf == shelf);
+            foreach (var frame in temp)
+            {
+                if (frame.Times.Peek() == flight)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void Next()
+        {
+            CheckForDepartureTime();
+            if (NeedRearrangeLocation.Count > 0)
+            {
+                FrameModel f = frames.Where(x => x.Location == NeedRearrangeLocation.Peek()).ElementAt(0);
+                if (f.Times.Count > 0)
+                {
+                    for (int i = 1; i < f.Times.Count; i++)
+                    {
+                        if (FlightTime[f.Times.ElementAt(i - 1)] > FlightTime[f.Times.ElementAt(i)])
+                        {
+                            return;
+                        }
+                    }
+                }
+                NeedRearrangeLocation.Dequeue();
+            }
+            if (NeedRearrangeLocation.Count > 0)
+            {
+                if (Rearrange != null)
+                {
+                    Rearrange(this, new LogicLocationEventArgs(NeedRearrangeLocation.Peek()));
+                }
+            }
+        }
+
+        public void ChangeTime(string flight, DateTime newTime)
+        {
+            FlightTime[flight] = newTime;
+            CheckForRearrange();
+            CheckForDepartureTime();
+        }
+
+        public void ChangeFlight(string oldFlight, string newFlight)
+        {
+            try
+            {
+                DateTime t = FlightTime[oldFlight];
+                FlightTime.Remove(oldFlight);
+                FlightTime.Add(newFlight, t);
+            }
+            catch
+            {
+                MessageBox.Show("更改航班号失败！");
+                return;
+            }
+
+
         }
         #endregion
 
@@ -148,6 +249,39 @@ namespace AirportBaggage
             {
                 return false;
             }
+        }
+
+        private void CheckForRearrange()
+        {
+            foreach (var f in frames.Where(x => x.Times.Count != 0))
+            {
+                for (int i = 1; i < f.Times.Count; i++)
+                {
+                    if (FlightTime[f.Times.ElementAt(i - 1)] > FlightTime[f.Times.ElementAt(i)])
+                    {
+                        NeedRearrangeLocation.Enqueue(f.Location);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void CheckForDepartureTime()
+        {
+            if (DateTime.Now - checkTime > new TimeSpan(0,1,0))
+            {
+                foreach (var item in FlightTime)
+                {
+                    if (DateTime.Now - item.Value <= new TimeSpan(0,1,0))
+                    {
+                        if (DepartureTimeReached != null)
+                        {
+                            DepartureTimeReached(this, item.Key);
+                        }
+                    }
+                }
+            }
+
         }
         #endregion
     }

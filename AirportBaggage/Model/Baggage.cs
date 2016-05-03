@@ -16,7 +16,8 @@ namespace AirportBaggage.Model
         private ToolTip toolTip;
         private string flight;
         private int number;
-        private Color oldColor;
+        private Color oldColor = Color.Empty;
+        private bool tooltipShowing = false;
         #endregion
 
         #region 构造
@@ -81,9 +82,10 @@ namespace AirportBaggage.Model
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            oldColor = Color;
+            if (oldColor == Color.Empty)
+                oldColor = Color;
             if (!Focused)
-                Color = Color.Red;
+                Color = Color.LightPink;
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -93,19 +95,30 @@ namespace AirportBaggage.Model
                 Color = oldColor;
         }
 
-        protected override void OnGotFocus(EventArgs e)
+        protected override void OnClick(EventArgs e)
         {
-            base.OnGotFocus(e);
-            Color = Color.Red;
-            toolTip.Show(string.Format("航班号：{0}\n序号：{1}", flight, number.ToString()), this, 10, 10);
+            base.OnClick(e);
+
+            if (tooltipShowing)
+            {
+                Color = oldColor;
+                toolTip.Hide(this);
+                tooltipShowing = false;
+            }
+            else
+            {
+                Color = Color.Red;
+                toolTip.Show(string.Format("航班号：{0}\n序号：{1}", flight, number.ToString()), this, 10, 10);
+                tooltipShowing = true;
+            }
         }
 
-        protected override void OnLostFocus(EventArgs e)
-        {
-            base.OnLostFocus(e);
-            Color = Color.Black;
-            toolTip.Hide(this);
-        }
+        //protected override void OnLostFocus(EventArgs e)
+        //{
+        //    base.OnLostFocus(e);
+        //    Color = oldColor;
+        //    toolTip.Hide(this);
+        //}
 
         protected override void OnLocationChanged(EventArgs e)
         {

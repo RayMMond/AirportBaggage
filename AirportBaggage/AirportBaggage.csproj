@@ -46,7 +46,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddFlight.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddFlight.Designer.cs">
+      <DependentUpon>AddFlight.cs</DependentUpon>
+    </Compile>
     <Compile Include="Algorithm.cs" />
+    <Compile Include="BaggageAdder.cs" />
+    <Compile Include="Configuration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration.Designer.cs">
+      <DependentUpon>Configuration.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -58,6 +71,12 @@
     </Compile>
     <Compile Include="Model\Baggage.Designer.cs">
       <DependentUpon>Baggage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Conveyor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Model\Conveyor.Designer.cs">
+      <DependentUpon>Conveyor.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\DrawableObjectBase.cs">
       <SubType>UserControl</SubType>
@@ -71,6 +90,7 @@
     <Compile Include="Model\Frame.Designer.cs">
       <DependentUpon>Frame.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Interface.cs" />
     <Compile Include="Model\Shelf.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -91,8 +111,17 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AddFlight.resx">
+      <DependentUpon>AddFlight.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration.resx">
+      <DependentUpon>Configuration.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Model\Conveyor.resx">
+      <DependentUpon>Conveyor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Model\DrawableObjectBase.resx">
       <DependentUpon>DrawableObjectBase.cs</DependentUpon>
