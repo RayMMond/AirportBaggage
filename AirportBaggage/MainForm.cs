@@ -12,6 +12,9 @@ using System.Threading;
 using AirportBaggage.Model;
 using CommonLib.ColorHelper;
 using CommonLib.DrawHelper;
+using CommonLib.XMLHelper;
+using System.Xml;
+using System.IO;
 
 namespace AirportBaggage
 {
@@ -20,8 +23,8 @@ namespace AirportBaggage
         #region 私有字段
         private System.Windows.Forms.Timer timer;
 
-        private const int FPS = 15;
-        private const int Speed = 20;
+        private const int FPS = 25;
+        private const int Speed = 25;
 
         private Algorithm algo;
 
@@ -37,6 +40,9 @@ namespace AirportBaggage
         private Stacker middleStacker;
 
         private Conveyor leftConveyor;
+
+        private BaggageAdder baggageAdder;
+        private XmlHelper config;
 
         #endregion
 
@@ -81,7 +87,14 @@ namespace AirportBaggage
             }
             else
             {
-
+                if (objects.Contains(baggageAdder))
+                {
+                    objects.Remove(baggageAdder);
+                }
+                else
+                {
+                    objects.Add(baggageAdder);
+                }
             }
         }
 
@@ -110,7 +123,30 @@ namespace AirportBaggage
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
+            algo.FlightTime.Add("CA0001", DateTime.Now.AddDays(10));
+            algo.FlightBaggageCount.Add("CA0001", 6400);
+            algo.CurrCount.Add("CA0001", 0);
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    for (int k = 0; k < 9; k++)
+                    {
+                        Baggage b = new Baggage("CA0001", 21, RandomColor.GetRadomColor());
+                        shelf1.PutBaggage(b, i, j);
+                        algo.Push("CA0001", 0);
+                    }
+                }
+            }
+            for (int i = 0; i < 7; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    Baggage b = new Baggage("CA0001", 21, RandomColor.GetRadomColor());
+                    shelf1.PutBaggage(b, i, 7);
+                    algo.Push("CA0001", 0);
+                }
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -119,10 +155,13 @@ namespace AirportBaggage
             if (c.ShowDialog() == DialogResult.OK)
             {
                 algo.FlightTime = c.Flight;
+                algo.FlightBaggageCount = c.FlightBaggageCount;
                 if (!string.IsNullOrEmpty(c.DepartureFlight))
                 {
                     algo.ChangeTime(c.DepartureFlight, DateTime.Now);
+                    algo.CheckForDepartNow = true;
                 }
+                SaveConfig();
             }
         }
 
@@ -204,7 +243,104 @@ namespace AirportBaggage
             Controls.Add(leftConveyor);
             objects.Add(leftConveyor);
 
+            config = new XmlHelper("config.xml");
+            LoadConfig();
+
+            baggageAdder = new BaggageAdder(algo.FlightBaggageCount, station);
+
             SetDisplayOrder();
+        }
+
+        private void SaveConfig()
+        {
+            try
+            {
+                if (config.SelectSingleNode("Root/Flight") == null)
+                {
+                    config.CreateXmlNode("Root", "Flight", "");
+                }
+                else
+                {
+                    config.DeleteChild("Root/Flight");
+                }
+
+                if (config.SelectSingleNode("Root/Time") == null)
+                {
+                    config.CreateXmlNode("Root", "Time", "");
+                }
+                else
+                {
+                    config.DeleteChild("Root/Time");
+                }
+
+                if (config.SelectSingleNode("Root/Count") == null)
+                {
+                    config.CreateXmlNode("Root", "Count", "");
+                }
+                else
+                {
+                    config.DeleteChild("Root/Count");
+                }
+
+
+                foreach (var item in algo.FlightTime)
+                {
+                    config.CreateXmlNode("Root/Flight", "Value", item.Key);
+                    config.CreateXmlNode("Root/Time", "Value", item.Value.Ticks.ToString());
+                }
+                foreach (var item in algo.FlightBaggageCount)
+                {
+                    config.CreateXmlNode("Root/Count", "Value", item.Value.ToString());
+                }
+                config.Save();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+
+        }
+
+        private void LoadConfig()
+        {
+            try
+            {
+                if (config.CanLoad)
+                {
+                    XmlNodeList flightNodes = config.SelectNodes("Root/Flight/Value");
+                    XmlNodeList timeNodes = config.SelectNodes("Root/Time/Value");
+                    XmlNodeList countNodes = config.SelectNodes("Root/Count/Value");
+                    if (flightNodes.Count > 0 && timeNodes.Count > 0 && countNodes.Count > 0 && flightNodes.Count == timeNodes.Count && timeNodes.Count == countNodes.Count)
+                    {
+                        algo.FlightTime.Clear();
+                        algo.FlightBaggageCount.Clear();
+                        algo.CurrCount.Clear();
+                        for (int i = 0; i < flightNodes.Count; i++)
+                        {
+                            algo.FlightTime.Add(flightNodes[i].InnerText, new DateTime(long.Parse(timeNodes[i].InnerText)));
+                            algo.FlightBaggageCount.Add(flightNodes[i].InnerText, int.Parse(countNodes[i].InnerText));
+                            algo.CurrCount.Add(flightNodes[i].InnerText, 0);
+                        }
+                    }
+                }
+                else
+                {
+                    algo.FlightTime = new Dictionary<string, DateTime>();
+                    algo.FlightBaggageCount = new Dictionary<string, int>();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+        }
+
+        private void SetDisplayOrder()
+        {
+            foreach (var item in objects.Where(x => x is ModelBase).OrderBy(x => (x as ModelBase).ZIndex))
+            {
+                (item as ModelBase).BringToFront();
+            }
         }
 
         private void LeftConveyor_FlightChanged(object sender, string e)
@@ -215,6 +351,7 @@ namespace AirportBaggage
         private void Algo_DepartureTimeReached(object sender, string e)
         {
             leftConveyor.Flight = e;
+            //rightConveyor.Flight = e;
         }
 
         private void Algo_Rearrange(object sender, LogicLocationEventArgs e)
@@ -238,20 +375,13 @@ namespace AirportBaggage
             {
 
             }
+
         }
 
         private void MiddleStacker_TargetPointReached(object sender, LogicLocationEventArgs e)
         {
             station.InsertBag(middleStacker.ReleaseBag());
-            inputStackerLeft.TargetPoint = Point.Empty;
-        }
-
-        private void SetDisplayOrder()
-        {
-            foreach (var item in objects.Where(x=>x is ModelBase).OrderBy(x => (x as ModelBase).ZIndex))
-            {
-                (item as ModelBase).BringToFront();
-            }
+            middleStacker.TargetPoint = Point.Empty;
         }
 
         private void LeftConveyor_CollectBaggage(object sender, EventArgs e)
@@ -264,17 +394,17 @@ namespace AirportBaggage
                     if (algo.CanPop(flight, 0))
                     {
                         LogicLocation l = algo.Peek(flight, 0);
-                        if (shelf1.OwnBaggage(l.Row, l.Column, flight))
+                        if (shelf1.OwnBaggage(l.Column, l.Row, flight))
                         {
                             int x, y;
                             x = shelf1.Location.X;
                             y = shelf1.Location.Y;
                             LogicLocation logic = algo.Pop(flight, 0);
-                            outputStackerLeft.TargetPoint = new Point(x + (logic.Row) * 43 + 20, y + (logic.Column) * 43 + 20);
+                            outputStackerLeft.TargetPoint = new Point(x + (logic.Column) * 43 + 20, y + (logic.Row) * 43 + 20);
                             outputStackerLeft.TargetLocation = logic;
                             outputStackerLeft.ReadyForCollecting = false;
                             outputStackerLeft.Rearranging = false;
-                            shelf1.SetFrameHighlight(logic.Row, logic.Column, Color.Red);
+                            shelf1.SetFrameHighlight(logic.Column, logic.Row, Color.Red);
                         }
                     }
                 }
@@ -283,7 +413,6 @@ namespace AirportBaggage
 
         private void OutputStackerLeft_OriginalPointReached(object sender, EventArgs e)
         {
-
             if (!outputStackerLeft.IsEmpty)
             {
                 if (outputStackerLeft.Rearranging && middleStacker.ReadyForCollecting)
@@ -302,14 +431,14 @@ namespace AirportBaggage
 
         private void OutputStackerLeft_TargetPointReached(object sender, LogicLocationEventArgs e)
         {
-            shelf1.GetBaggage(e.Location.Row, e.Location.Column);
-            shelf1.ClearFrameHighlight(e.Location.Row, e.Location.Column);
+            shelf1.GetBaggage(e.Location.Column, e.Location.Row);
+            shelf1.ClearFrameHighlight(e.Location.Column, e.Location.Row);
         }
 
         private void InputStackerLeft_TargetPointReached(object sender, LogicLocationEventArgs e)
         {
-            shelf1.PutBaggage((sender as Stacker).ReleaseBag(), e.Location.Row, e.Location.Column);
-            shelf1.ClearFrameHighlight(e.Location.Row, e.Location.Column);
+            shelf1.PutBaggage((sender as Stacker).ReleaseBag(), e.Location.Column, e.Location.Row);
+            shelf1.ClearFrameHighlight(e.Location.Column, e.Location.Row);
             inputStackerLeft.TargetPoint = Point.Empty;
         }
 
@@ -329,18 +458,13 @@ namespace AirportBaggage
                 LogicLocation logic = algo.Push(e.Baggage.Flight, 0);
                 inputStackerLeft.GrabBag(station.ReleaseBag());
                 inputStackerLeft.ReadyForCollecting = false;
-                inputStackerLeft.TargetPoint = new Point(x + (logic.Row) * 43 + 20, y + (logic.Column) * 43 + 20);
+                inputStackerLeft.TargetPoint = new Point(x + (logic.Column) * 43 + 20, y + (logic.Row) * 43 + 20);
                 inputStackerLeft.TargetLocation = logic;
-                shelf1.SetFrameHighlight(logic.Row, logic.Column, Color.Black);
+                shelf1.SetFrameHighlight(logic.Column, logic.Row, Color.Black);
             }
-
         }
         #endregion
 
-        private void AddBaggageThread()
-        {
-
-        }
         //private void ShowOpaqueLayer(int alpha)
         //{
         //    try

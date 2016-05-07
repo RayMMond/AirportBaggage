@@ -33,7 +33,7 @@
             this.mouseLocationY = new System.Windows.Forms.ToolStripStatusLabel();
             this.btAddBaggages = new System.Windows.Forms.Button();
             this.btStartSimulation = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btAddBaggage = new System.Windows.Forms.Button();
             this.btConfig = new System.Windows.Forms.Button();
             this.tbDepartureFlight1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -65,7 +65,7 @@
             // 
             // btAddBaggages
             // 
-            this.btAddBaggages.Location = new System.Drawing.Point(65, 558);
+            this.btAddBaggages.Location = new System.Drawing.Point(93, 573);
             this.btAddBaggages.Name = "btAddBaggages";
             this.btAddBaggages.Size = new System.Drawing.Size(95, 23);
             this.btAddBaggages.TabIndex = 2;
@@ -75,7 +75,7 @@
             // 
             // btStartSimulation
             // 
-            this.btStartSimulation.Location = new System.Drawing.Point(181, 558);
+            this.btStartSimulation.Location = new System.Drawing.Point(12, 573);
             this.btStartSimulation.Name = "btStartSimulation";
             this.btStartSimulation.Size = new System.Drawing.Size(75, 23);
             this.btStartSimulation.TabIndex = 3;
@@ -83,19 +83,19 @@
             this.btStartSimulation.UseVisualStyleBackColor = true;
             this.btStartSimulation.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button3
+            // btAddBaggage
             // 
-            this.button3.Location = new System.Drawing.Point(290, 558);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 4;
-            this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btAddBaggage.Location = new System.Drawing.Point(921, 573);
+            this.btAddBaggage.Name = "btAddBaggage";
+            this.btAddBaggage.Size = new System.Drawing.Size(75, 23);
+            this.btAddBaggage.TabIndex = 4;
+            this.btAddBaggage.Text = "自动添加";
+            this.btAddBaggage.UseVisualStyleBackColor = true;
+            this.btAddBaggage.Click += new System.EventHandler(this.button3_Click);
             // 
             // btConfig
             // 
-            this.btConfig.Location = new System.Drawing.Point(398, 558);
+            this.btConfig.Location = new System.Drawing.Point(194, 573);
             this.btConfig.Name = "btConfig";
             this.btConfig.Size = new System.Drawing.Size(75, 23);
             this.btConfig.TabIndex = 5;
@@ -106,7 +106,7 @@
             // tbDepartureFlight1
             // 
             this.tbDepartureFlight1.Font = new System.Drawing.Font("宋体", 12F);
-            this.tbDepartureFlight1.Location = new System.Drawing.Point(589, 558);
+            this.tbDepartureFlight1.Location = new System.Drawing.Point(275, 462);
             this.tbDepartureFlight1.Name = "tbDepartureFlight1";
             this.tbDepartureFlight1.ReadOnly = true;
             this.tbDepartureFlight1.Size = new System.Drawing.Size(112, 26);
@@ -116,7 +116,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("宋体", 12F);
-            this.label1.Location = new System.Drawing.Point(495, 565);
+            this.label1.Location = new System.Drawing.Point(181, 467);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(88, 16);
             this.label1.TabIndex = 7;
@@ -131,7 +131,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbDepartureFlight1);
             this.Controls.Add(this.btConfig);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btAddBaggage);
             this.Controls.Add(this.btStartSimulation);
             this.Controls.Add(this.btAddBaggages);
             this.Controls.Add(this.statusStrip);
@@ -157,7 +157,7 @@
         private System.Windows.Forms.ToolStripStatusLabel mouseLocationY;
         private System.Windows.Forms.Button btAddBaggages;
         private System.Windows.Forms.Button btStartSimulation;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btAddBaggage;
         private System.Windows.Forms.Button btConfig;
         private System.Windows.Forms.TextBox tbDepartureFlight1;
         private System.Windows.Forms.Label label1;

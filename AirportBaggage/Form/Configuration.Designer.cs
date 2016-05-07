@@ -39,6 +39,7 @@
             this.btSetFlight = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.tbFlightBaggageCount = new System.Windows.Forms.TextBox();
+            this.btEdit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBox
@@ -117,7 +118,7 @@
             // btDelete
             // 
             this.btDelete.Font = new System.Drawing.Font("宋体", 12F);
-            this.btDelete.Location = new System.Drawing.Point(301, 106);
+            this.btDelete.Location = new System.Drawing.Point(301, 144);
             this.btDelete.Name = "btDelete";
             this.btDelete.Size = new System.Drawing.Size(144, 32);
             this.btDelete.TabIndex = 8;
@@ -155,11 +156,24 @@
             this.tbFlightBaggageCount.TabIndex = 10;
             this.tbFlightBaggageCount.TextChanged += new System.EventHandler(this.tbFlightBaggageCount_TextChanged);
             // 
+            // btEdit
+            // 
+            this.btEdit.Font = new System.Drawing.Font("宋体", 12F);
+            this.btEdit.Location = new System.Drawing.Point(301, 106);
+            this.btEdit.Name = "btEdit";
+            this.btEdit.Size = new System.Drawing.Size(144, 32);
+            this.btEdit.TabIndex = 12;
+            this.btEdit.Text = "编辑";
+            this.btEdit.UseVisualStyleBackColor = true;
+            this.btEdit.Click += new System.EventHandler(this.btEdit_Click);
+            // 
             // Configuration
             // 
+            this.AcceptButton = this.btSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(740, 480);
+            this.Controls.Add(this.btEdit);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.tbFlightBaggageCount);
             this.Controls.Add(this.btSetFlight);
@@ -192,5 +206,6 @@
         private System.Windows.Forms.Button btSetFlight;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox tbFlightBaggageCount;
+        private System.Windows.Forms.Button btEdit;
     }
 }

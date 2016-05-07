@@ -46,18 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddFlight.cs">
+    <Compile Include="Form\AddFlight.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddFlight.Designer.cs">
+    <Compile Include="Form\AddFlight.Designer.cs">
       <DependentUpon>AddFlight.cs</DependentUpon>
     </Compile>
-    <Compile Include="Algorithm.cs" />
-    <Compile Include="BaggageAdder.cs" />
-    <Compile Include="Configuration.cs">
+    <Compile Include="Class\Algorithm.cs" />
+    <Compile Include="Class\BaggageAdder.cs" />
+    <Compile Include="Form\Configuration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Configuration.Designer.cs">
+    <Compile Include="Form\Configuration.Designer.cs">
       <DependentUpon>Configuration.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -111,10 +111,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AddFlight.resx">
+    <EmbeddedResource Include="Form\AddFlight.resx">
       <DependentUpon>AddFlight.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Configuration.resx">
+    <EmbeddedResource Include="Form\Configuration.resx">
       <DependentUpon>Configuration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">

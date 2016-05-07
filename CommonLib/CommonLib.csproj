@@ -57,6 +57,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="StringHelper.cs" />
+    <Compile Include="XMLHelper\XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="OpaLayer.resx">
@@ -70,6 +71,7 @@
   <ItemGroup>
     <Resource Include="Resources\loading.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

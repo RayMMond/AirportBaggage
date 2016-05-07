@@ -36,7 +36,7 @@ namespace AirportBaggage.Model
         }
         #endregion
 
-        #region 属性
+        #region 属性ree
         public Color Color
         {
             get
@@ -55,6 +55,14 @@ namespace AirportBaggage.Model
             get
             {
                 return Count == 0;
+            }
+        }
+
+        public bool IsFull
+        {
+            get
+            {
+                return baggages.Count == capacity;
             }
         }
 

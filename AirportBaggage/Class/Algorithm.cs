@@ -13,7 +13,8 @@ namespace AirportBaggage
     {
         #region 私有字段
         List<FrameModel> frames;
-        private DateTime checkTime = DateTime.Now;
+        private DateTime checkTime = new DateTime(0);
+        private Dictionary<string, int> flightBaggageCount;
         #endregion
 
         #region 构造
@@ -24,6 +25,7 @@ namespace AirportBaggage
             FrameCount = frameCount;
             NeedRearrangeLocation = new Queue<LogicLocation>();
             FlightTime = new Dictionary<string, DateTime>();
+            FlightBaggageCount = new Dictionary<string, int>();
             frames = new List<FrameModel>();
             for (int i = 0; i < ShelfCount; i++)
             {
@@ -50,9 +52,37 @@ namespace AirportBaggage
 
         public Dictionary<string, DateTime> FlightTime { get; set; }
 
-        public Dictionary<string, int> FlightBaggageCount { get; set; }
+        public Dictionary<string, int> FlightBaggageCount
+        {
+            get
+            {
+                return flightBaggageCount;
+            }
+            set
+            {
+                flightBaggageCount = value;
+                if (flightBaggageCount != null)
+                {
+                    CurrCount = new Dictionary<string, int>(flightBaggageCount);
+                    var keys = CurrCount.Keys.ToList();
+                    foreach (var item in keys)
+                    {
+                        CurrCount[item] = 0;
+                    }
+                }
+            }
+        }
+
+        public Dictionary<string, int> CurrCount
+        {
+            get; set;
+        }
 
         public Queue<LogicLocation> NeedRearrangeLocation { get; set; }
+
+        public string CurrentFlight { get; set; }
+
+        public bool CheckForDepartNow { get; set; }
         #endregion
 
         #region 事件
@@ -70,6 +100,16 @@ namespace AirportBaggage
                 MessageBox.Show("航班号不存在！");
                 return null;
             }
+            if (!CurrCount.Keys.Contains(flight))
+            {
+                MessageBox.Show("此航班不是早交行李！");
+                return null;
+            }
+            if (CurrCount[flight] >= FlightBaggageCount[flight])
+            {
+                MessageBox.Show("此行李不是早交行李！");
+                return null;
+            }
             var frameNotFull = frames.Where(f => f.Times.Count < FrameCount && f.Location.Shelf == shelf);
             foreach (var frame in frameNotFull)
             {
@@ -82,7 +122,6 @@ namespace AirportBaggage
                 {
                     frame.Times.Enqueue(flight);
                     return frame.Location;
-
                 }
             }
             if (IsAllFull())
@@ -115,6 +154,7 @@ namespace AirportBaggage
                 var f = frameNotFull.OrderBy(x => x.Times.Count).ToList()[0];
                 f.Times.Enqueue(flight);
                 NeedRearrangeLocation.Enqueue(f.Location);
+                CurrCount[flight] += 1;
                 return f.Location;
 
             }
@@ -122,6 +162,7 @@ namespace AirportBaggage
 
         public LogicLocation Pop(string flight, int shelf)
         {
+            CurrentFlight = flight;
             if (string.IsNullOrEmpty(flight))
             {
                 MessageBox.Show("航班号不存在！");
@@ -135,6 +176,12 @@ namespace AirportBaggage
                     frame.Times.Dequeue();
                     return frame.Location;
                 }
+            }
+            FrameModel f = CheckForRest(frameNotEmpty.ToList(), flight);
+            if (f != null)
+            {
+                NeedRearrangeLocation.Enqueue(f.Location);
+                return f.Location;
             }
             return null;
         }
@@ -165,6 +212,11 @@ namespace AirportBaggage
                     return frame.Location;
                 }
             }
+            FrameModel f = CheckForRest(frameNotEmpty.ToList(), flight);
+            if (f != null)
+            {
+                return f.Location;
+            }
             return null;
         }
 
@@ -178,7 +230,7 @@ namespace AirportBaggage
             var temp = frames.Where(x => x.Times.Count > 0 && x.Location.Shelf == shelf);
             foreach (var frame in temp)
             {
-                if (frame.Times.Peek() == flight)
+                if (frame.Times.Contains(flight))
                 {
                     return true;
                 }
@@ -189,21 +241,9 @@ namespace AirportBaggage
         public void Next()
         {
             CheckForDepartureTime();
-            if (NeedRearrangeLocation.Count > 0)
-            {
-                FrameModel f = frames.Where(x => x.Location == NeedRearrangeLocation.Peek()).ElementAt(0);
-                if (f.Times.Count > 0)
-                {
-                    for (int i = 1; i < f.Times.Count; i++)
-                    {
-                        if (FlightTime[f.Times.ElementAt(i - 1)] > FlightTime[f.Times.ElementAt(i)])
-                        {
-                            return;
-                        }
-                    }
-                }
-                NeedRearrangeLocation.Dequeue();
-            }
+
+            CheckForDequeue();
+
             if (NeedRearrangeLocation.Count > 0)
             {
                 if (Rearrange != null)
@@ -211,6 +251,7 @@ namespace AirportBaggage
                     Rearrange(this, new LogicLocationEventArgs(NeedRearrangeLocation.Peek()));
                 }
             }
+
         }
 
         public void ChangeTime(string flight, DateTime newTime)
@@ -251,6 +292,33 @@ namespace AirportBaggage
             }
         }
 
+        private void CheckForDequeue()
+        {
+            if (NeedRearrangeLocation.Count > 0)
+            {
+                FrameModel f = frames.Where(x => x.Location == NeedRearrangeLocation.Peek()).ElementAt(0);
+                if (f.Times.Count > 0)
+                {
+                    if (!string.IsNullOrEmpty(CurrentFlight))
+                    {
+                        if (f.Times.Peek() == CurrentFlight)
+                        {
+                            NeedRearrangeLocation.Dequeue();
+                            return;
+                        }
+                    }
+                    for (int i = 1; i < f.Times.Count; i++)
+                    {
+                        if (FlightTime[f.Times.ElementAt(i - 1)] > FlightTime[f.Times.ElementAt(i)])
+                        {
+                            return;
+                        }
+                    }
+                }
+                NeedRearrangeLocation.Dequeue();
+            }
+        }
+
         private void CheckForRearrange()
         {
             foreach (var f in frames.Where(x => x.Times.Count != 0))
@@ -268,20 +336,41 @@ namespace AirportBaggage
 
         private void CheckForDepartureTime()
         {
-            if (DateTime.Now - checkTime > new TimeSpan(0,1,0))
+            if (DateTime.Now - checkTime > new TimeSpan(0,0,10) || CheckForDepartNow)
             {
+                CheckForDepartNow = false;
                 foreach (var item in FlightTime)
                 {
-                    if (DateTime.Now - item.Value <= new TimeSpan(0,1,0))
+                    if (DateTime.Now > item.Value)
                     {
-                        if (DepartureTimeReached != null)
+                        if (DateTime.Now - item.Value <= new TimeSpan(0, 1, 0))
                         {
-                            DepartureTimeReached(this, item.Key);
+                            if (DepartureTimeReached != null)
+                            {
+                                DepartureTimeReached(this, item.Key);
+                            }
                         }
+                    }
+
+                }
+                checkTime = DateTime.Now;
+            }
+
+        }
+
+        private FrameModel CheckForRest(List<FrameModel> frameNotEmpty, string flight)
+        {
+            foreach (var frame in frameNotEmpty)
+            {
+                foreach (var bag in frame.Times)
+                {
+                    if (bag == flight)
+                    {
+                        return frame;
                     }
                 }
             }
-
+            return null;
         }
         #endregion
     }

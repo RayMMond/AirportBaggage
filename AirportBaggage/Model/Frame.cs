@@ -82,9 +82,12 @@ namespace AirportBaggage.Model
         {
             if (baggages.Count > 0)
             {
-                if (baggages.Peek().Flight == flight)
+                foreach (var bag in baggages)
                 {
-                    return true;
+                    if (bag.Flight == flight)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
