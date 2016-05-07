@@ -37,6 +37,12 @@
             this.btConfig = new System.Windows.Forms.Button();
             this.tbDepartureFlight1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.tbDepartureFlight2 = new System.Windows.Forms.TextBox();
+            this.btPutBaggage = new System.Windows.Forms.Button();
+            this.tbFlight = new System.Windows.Forms.TextBox();
+            this.tbBaggage = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -122,12 +128,73 @@
             this.label1.TabIndex = 7;
             this.label1.Text = "出库航班：";
             // 
+            // tbDepartureFlight2
+            // 
+            this.tbDepartureFlight2.Font = new System.Drawing.Font("宋体", 12F);
+            this.tbDepartureFlight2.Location = new System.Drawing.Point(738, 462);
+            this.tbDepartureFlight2.Name = "tbDepartureFlight2";
+            this.tbDepartureFlight2.ReadOnly = true;
+            this.tbDepartureFlight2.Size = new System.Drawing.Size(112, 26);
+            this.tbDepartureFlight2.TabIndex = 8;
+            // 
+            // btPutBaggage
+            // 
+            this.btPutBaggage.Location = new System.Drawing.Point(194, 546);
+            this.btPutBaggage.Name = "btPutBaggage";
+            this.btPutBaggage.Size = new System.Drawing.Size(75, 23);
+            this.btPutBaggage.TabIndex = 9;
+            this.btPutBaggage.Text = "入库";
+            this.btPutBaggage.UseVisualStyleBackColor = true;
+            this.btPutBaggage.Click += new System.EventHandler(this.btPutBaggage_Click);
+            // 
+            // tbFlight
+            // 
+            this.tbFlight.Location = new System.Drawing.Point(93, 519);
+            this.tbFlight.Name = "tbFlight";
+            this.tbFlight.Size = new System.Drawing.Size(95, 21);
+            this.tbFlight.TabIndex = 10;
+            this.tbFlight.TextChanged += new System.EventHandler(this.tbFlight_TextChanged);
+            // 
+            // tbBaggage
+            // 
+            this.tbBaggage.Location = new System.Drawing.Point(93, 546);
+            this.tbBaggage.Name = "tbBaggage";
+            this.tbBaggage.Size = new System.Drawing.Size(95, 21);
+            this.tbBaggage.TabIndex = 11;
+            this.tbBaggage.TextChanged += new System.EventHandler(this.tbBaggage_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("宋体", 12F);
+            this.label2.Location = new System.Drawing.Point(20, 522);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(56, 16);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "航班号";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("宋体", 12F);
+            this.label3.Location = new System.Drawing.Point(20, 545);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 16);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "行李号";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1008, 621);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.tbBaggage);
+            this.Controls.Add(this.tbFlight);
+            this.Controls.Add(this.btPutBaggage);
+            this.Controls.Add(this.tbDepartureFlight2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbDepartureFlight1);
             this.Controls.Add(this.btConfig);
@@ -161,6 +228,12 @@
         private System.Windows.Forms.Button btConfig;
         private System.Windows.Forms.TextBox tbDepartureFlight1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox tbDepartureFlight2;
+        private System.Windows.Forms.Button btPutBaggage;
+        private System.Windows.Forms.TextBox tbFlight;
+        private System.Windows.Forms.TextBox tbBaggage;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 

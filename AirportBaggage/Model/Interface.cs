@@ -10,4 +10,9 @@ namespace AirportBaggage.Model
     {
         void Next();
     }
+
+    public interface IChangedFlight
+    {
+        void ChangedFlight(string oldFlight, string newFlight);
+    }
 }

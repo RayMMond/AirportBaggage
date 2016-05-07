@@ -134,6 +134,17 @@ namespace AirportBaggage.Model
                 CanCollect(this, new BaggageEventArgs(baggages[0]));
             }
         }
+
+        public void ChangeFlight(string oldFlight, string newFlight)
+        {
+            foreach (var item in baggages)
+            {
+                if (item.Flight == oldFlight)
+                {
+                    item.Flight = newFlight;
+                }
+            }
+        }
         #endregion
 
         #region 私有方法

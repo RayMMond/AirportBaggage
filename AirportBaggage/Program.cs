@@ -25,7 +25,7 @@ namespace AirportBaggage
             }
             catch (Exception e)
             {
-                MessageBox.Show("未捕获异常：" + e.Message);
+                MessageBox.Show("未捕获异常：" + e.Message + Environment.NewLine + e.StackTrace);
             }
 #endif
         }

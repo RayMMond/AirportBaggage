@@ -84,14 +84,12 @@ namespace AirportBaggage.Model
             base.OnMouseEnter(e);
             if (oldColor == Color.Empty)
                 oldColor = Color;
-            if (!Focused)
                 Color = Color.LightPink;
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            if (!Focused)
                 Color = oldColor;
         }
 

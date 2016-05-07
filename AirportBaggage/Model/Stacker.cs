@@ -111,6 +111,18 @@ namespace AirportBaggage.Model
         #endregion
 
         #region 方法
+
+        public void ChangeFlight(string oldFlight, string newFlight)
+        {
+            if (bag != null)
+            {
+                if (bag.Flight == oldFlight)
+                {
+                    bag.Flight = newFlight;
+                }
+            }
+        }
+
         public void GrabBag(Baggage b)
         {
             if (b == null)
@@ -215,6 +227,8 @@ namespace AirportBaggage.Model
 
             return curr + new Size(x, y);
         }
+
+
 
         #endregion
     }
