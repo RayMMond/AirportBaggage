@@ -15,7 +15,7 @@ namespace AirportBaggage.Model
         #region 字段
         //private ToolTip toolTip;
         private List<Baggage> baggages;
-        private int capacity = 3;
+        private int capacity = 6;
         #endregion
 
         #region 构造
@@ -30,13 +30,12 @@ namespace AirportBaggage.Model
             //toolTip.UseAnimation = true;
             //toolTip.UseFading = true;
             baggages = new List<Baggage>(capacity);
-            Size = new Size(50, 15);
             Color = BackColor = color;
             WaitingForCollection = false;
         }
         #endregion
 
-        #region 属性ree
+        #region 属性
         public Color Color
         {
             get
@@ -94,7 +93,7 @@ namespace AirportBaggage.Model
                 MessageBox.Show("入库台已满！");
                 return;
             }
-            b.Location = new Point(Count * 12 + 2, 2);
+            b.Location = new Point(2, Count * 12 + 2);
             baggages.Add(b);
             Controls.Add(b);
         }
@@ -152,7 +151,7 @@ namespace AirportBaggage.Model
         {
             for (int i = 0; i < Count; i++)
             {
-                baggages[i].Location = new Point(i * 12 + 2, 2);
+                baggages[i].Location = new Point(2, i * 12 + 2);
             }
         }
         #endregion

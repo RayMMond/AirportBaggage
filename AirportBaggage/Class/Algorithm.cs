@@ -15,6 +15,7 @@ namespace AirportBaggage
         List<FrameModel> frames;
         private DateTime checkTime = new DateTime(0);
         private Dictionary<string, int> flightBaggageCount;
+        private Dictionary<string, int> flightAtShelf = new Dictionary<string, int>();
         #endregion
 
         #region 构造
@@ -27,17 +28,25 @@ namespace AirportBaggage
             FlightTime = new Dictionary<string, DateTime>();
             FlightBaggageCount = new Dictionary<string, int>();
             frames = new List<FrameModel>();
-            for (int i = 0; i < ShelfCount; i++)
+            for (int j = ShelfSize.Height - 1; j >= 0; j--)
             {
-                for (int j = 0; j < ShelfSize.Height; j++)
+                for (int k = 0; k < ShelfSize.Width; k++)
                 {
-                    for (int k = 0; k < ShelfSize.Width; k++)
+                    frames.Add(new FrameModel(0, k, j)
                     {
-                        frames.Add(new FrameModel(i,j,k)
-                        {
-                            Times = new Queue<string>(FrameCount)
-                        });
-                    }
+                        Times = new Queue<string>(FrameCount)
+                    });
+                }
+            }
+
+            for (int j = 0; j < ShelfSize.Height; j++)
+            {
+                for (int k = 0; k < ShelfSize.Width; k++)
+                {
+                    frames.Add(new FrameModel(1, k, j)
+                    {
+                        Times = new Queue<string>(FrameCount)
+                    });
                 }
             }
         }
@@ -83,6 +92,18 @@ namespace AirportBaggage
         public string CurrentFlight { get; set; }
 
         public bool CheckForDepartNow { get; set; }
+
+        public Dictionary<string, int> FlightAtShelf
+        {
+            get
+            {
+                return flightAtShelf;
+            }
+            set
+            {
+                flightAtShelf = value;
+            }
+        }
         #endregion
 
         #region 事件
@@ -116,11 +137,19 @@ namespace AirportBaggage
                 if (frame.Times.Count == 0)
                 {
                     frame.Times.Enqueue(flight);
+                    if (!flightAtShelf.Keys.Contains(flight))
+                    {
+                        flightAtShelf.Add(flight, frame.Location.Shelf);
+                    }
                     return frame.Location;
                 }
                 else if (frame.Times.Peek() == flight)
                 {
                     frame.Times.Enqueue(flight);
+                    if (!flightAtShelf.Keys.Contains(flight))
+                    {
+                        flightAtShelf.Add(flight, frame.Location.Shelf);
+                    }
                     return frame.Location;
                 }
             }
@@ -277,6 +306,7 @@ namespace AirportBaggage
 
 
         }
+
         #endregion
 
         #region 私有方法

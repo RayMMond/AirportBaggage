@@ -126,6 +126,9 @@
     <EmbeddedResource Include="Model\DrawableObjectBase.resx">
       <DependentUpon>DrawableObjectBase.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Model\StorageStation.resx">
+      <DependentUpon>StorageStation.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

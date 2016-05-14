@@ -23,8 +23,8 @@ namespace AirportBaggage
         #region 私有字段
         private System.Windows.Forms.Timer timer;
 
-        private const int FPS = 25;
-        private const int Speed = 25;
+        private int FPS = 25;
+        private int Speed = 25;
 
         private Algorithm algo;
 
@@ -45,6 +45,8 @@ namespace AirportBaggage
         private BaggageAdder baggageAdder;
         private XmlHelper config;
 
+        private bool mistery = true;
+
         public object StringHelp { get; private set; }
 
         #endregion
@@ -60,6 +62,8 @@ namespace AirportBaggage
             timer = new System.Windows.Forms.Timer();
             timer.Interval = 1000 / FPS;
             timer.Tick += Timer_Tick;
+            moveSpeed.Value = Speed;
+            simulationSpeed.Value = FPS;
         }
 
         #endregion
@@ -191,7 +195,7 @@ namespace AirportBaggage
             algo.DepartureTimeReached += Algo_DepartureTimeReached;
             objects.Add(algo);
 
-            station = new StorageStation(1.0, Color.Transparent, 480, 10);
+            station = new StorageStation(1.0, Color.Transparent, 490, 10);
             station.BorderStyle = BorderStyle.FixedSingle;
             station.Name = "station";
             station.ZIndex = 0;
@@ -501,6 +505,19 @@ namespace AirportBaggage
                             x = shelf1.Location.X;
                             y = shelf1.Location.Y;
                             LogicLocation logic = algo.Pop(flight, 0);
+                            if (logic == null)
+                            {
+                                MessageBox.Show(string.Format("航班{0}已完成出库。", flight));
+                                if (tbDepartureFlight1.Text == flight)
+                                {
+                                    tbDepartureFlight1.Text = "";
+                                }
+                                else if (tbDepartureFlight2.Text == flight)
+                                {
+                                    tbDepartureFlight2.Text = "";
+                                }
+                                return;
+                            }
                             outputStackerLeft.TargetPoint = new Point(x + (logic.Column) * 43 + 20, y + (logic.Row) * 43 + 20);
                             outputStackerLeft.TargetLocation = logic;
                             outputStackerLeft.ReadyForCollecting = false;
@@ -528,6 +545,19 @@ namespace AirportBaggage
                             x = shelf2.Location.X;
                             y = shelf2.Location.Y;
                             LogicLocation logic = algo.Pop(flight, 0);
+                            if (logic == null)
+                            {
+                                MessageBox.Show(string.Format("航班{0}已完成出库。", flight));
+                                if (tbDepartureFlight1.Text == flight)
+                                {
+                                    tbDepartureFlight1.Text = "";
+                                }
+                                else if (tbDepartureFlight2.Text == flight)
+                                {
+                                    tbDepartureFlight2.Text = "";
+                                }
+                                return;
+                            }
                             outputStackerRight.TargetPoint = new Point(x + (logic.Column) * 43 + 20, y + (logic.Row) * 43 + 20);
                             outputStackerRight.TargetLocation = logic;
                             outputStackerRight.ReadyForCollecting = false;
@@ -615,24 +645,49 @@ namespace AirportBaggage
 
         private void Station_CanCollect(object sender, BaggageEventArgs e)
         {
-            if (inputStackerLeft.ReadyForCollecting)
+            int z;
+            if (algo.FlightAtShelf.Keys.Contains(e.Baggage.Flight))
+            {
+                z = algo.FlightAtShelf[e.Baggage.Flight];
+            }
+            else
+            {
+                if (mistery)
+                {
+                    z = 0;
+                }
+                else
+                {
+                    z = 1;
+                }
+                mistery = !mistery;
+            }
+            if (inputStackerLeft.ReadyForCollecting && z == 0)
             {
                 int x, y;
                 x = shelf1.Location.X;
                 y = shelf1.Location.Y;
-                LogicLocation logic = algo.Push(e.Baggage.Flight, 0);
+                LogicLocation logic = algo.Push(e.Baggage.Flight, z);
+                if (logic == null)
+                {
+                    return;
+                }
                 inputStackerLeft.GrabBag(station.ReleaseBag());
                 inputStackerLeft.ReadyForCollecting = false;
                 inputStackerLeft.TargetPoint = new Point(x + (logic.Column) * 43 + 20, y + (logic.Row) * 43 + 20);
                 inputStackerLeft.TargetLocation = logic;
                 shelf1.SetFrameHighlight(logic.Column, logic.Row, Color.Black);
             }
-            else if (inputStackerRight.ReadyForCollecting)
+            else if (inputStackerRight.ReadyForCollecting && z == 1)
             {
                 int x, y;
                 x = shelf2.Location.X;
                 y = shelf2.Location.Y;
-                LogicLocation logic = algo.Push(e.Baggage.Flight, 1);
+                LogicLocation logic = algo.Push(e.Baggage.Flight, z);
+                if (logic == null)
+                {
+                    return;
+                }
                 inputStackerRight.GrabBag(station.ReleaseBag());
                 inputStackerRight.ReadyForCollecting = false;
                 inputStackerRight.TargetPoint = new Point(x + (logic.Column) * 43 + 20, y + (logic.Row) * 43 + 20);
@@ -678,6 +733,22 @@ namespace AirportBaggage
                 MessageBox.Show("行李号必须为正整数！");
                 tbBaggage.Text = "";
             }
+        }
+
+        private void simulationSpeed_Scroll(object sender, EventArgs e)
+        {
+            FPS = simulationSpeed.Value;
+            timer.Interval = 1000 / FPS;
+        }
+
+        private void moveSpeed_Scroll(object sender, EventArgs e)
+        {
+            Speed = moveSpeed.Value;
+            inputStackerLeft.Speed = Speed;
+            inputStackerRight.Speed = Speed;
+            outputStackerLeft.Speed = Speed;
+            outputStackerRight.Speed = Speed;
+            middleStacker.Speed = Speed;
         }
 
         //private void btChangeFlight_Click(object sender, EventArgs e)

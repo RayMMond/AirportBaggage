@@ -66,7 +66,7 @@
             // btSave
             // 
             this.btSave.Font = new System.Drawing.Font("宋体", 12F);
-            this.btSave.Location = new System.Drawing.Point(610, 390);
+            this.btSave.Location = new System.Drawing.Point(759, 390);
             this.btSave.Name = "btSave";
             this.btSave.Size = new System.Drawing.Size(104, 32);
             this.btSave.TabIndex = 2;
@@ -77,7 +77,7 @@
             // btCancel
             // 
             this.btCancel.Font = new System.Drawing.Font("宋体", 12F);
-            this.btCancel.Location = new System.Drawing.Point(610, 436);
+            this.btCancel.Location = new System.Drawing.Point(759, 436);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(104, 32);
             this.btCancel.TabIndex = 3;
@@ -172,7 +172,7 @@
             this.AcceptButton = this.btSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(740, 480);
+            this.ClientSize = new System.Drawing.Size(875, 480);
             this.Controls.Add(this.btEdit);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.tbFlightBaggageCount);

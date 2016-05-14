@@ -43,7 +43,13 @@
             this.tbBaggage = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.simulationSpeed = new System.Windows.Forms.TrackBar();
+            this.moveSpeed = new System.Windows.Forms.TrackBar();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.statusStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.simulationSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveSpeed)).BeginInit();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -97,6 +103,7 @@
             this.btAddBaggage.TabIndex = 4;
             this.btAddBaggage.Text = "自动添加";
             this.btAddBaggage.UseVisualStyleBackColor = true;
+            this.btAddBaggage.Visible = false;
             this.btAddBaggage.Click += new System.EventHandler(this.button3_Click);
             // 
             // btConfig
@@ -183,12 +190,58 @@
             this.label3.TabIndex = 13;
             this.label3.Text = "行李号";
             // 
+            // simulationSpeed
+            // 
+            this.simulationSpeed.Location = new System.Drawing.Point(298, 545);
+            this.simulationSpeed.Maximum = 50;
+            this.simulationSpeed.Minimum = 10;
+            this.simulationSpeed.Name = "simulationSpeed";
+            this.simulationSpeed.Size = new System.Drawing.Size(313, 45);
+            this.simulationSpeed.TabIndex = 14;
+            this.simulationSpeed.Value = 10;
+            this.simulationSpeed.Scroll += new System.EventHandler(this.simulationSpeed_Scroll);
+            // 
+            // moveSpeed
+            // 
+            this.moveSpeed.Location = new System.Drawing.Point(647, 545);
+            this.moveSpeed.Maximum = 50;
+            this.moveSpeed.Minimum = 10;
+            this.moveSpeed.Name = "moveSpeed";
+            this.moveSpeed.Size = new System.Drawing.Size(336, 45);
+            this.moveSpeed.TabIndex = 15;
+            this.moveSpeed.Value = 10;
+            this.moveSpeed.Scroll += new System.EventHandler(this.moveSpeed_Scroll);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("宋体", 12F);
+            this.label4.Location = new System.Drawing.Point(644, 518);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(72, 16);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "移动速度";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("宋体", 12F);
+            this.label5.Location = new System.Drawing.Point(295, 518);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 16);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "模拟速度";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1008, 621);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.moveSpeed);
+            this.Controls.Add(this.simulationSpeed);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.tbBaggage);
@@ -212,6 +265,8 @@
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseMove);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.simulationSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveSpeed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -234,6 +289,10 @@
         private System.Windows.Forms.TextBox tbBaggage;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TrackBar simulationSpeed;
+        private System.Windows.Forms.TrackBar moveSpeed;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
     }
 }
 
