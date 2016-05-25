@@ -194,7 +194,7 @@
             // 
             this.simulationSpeed.Location = new System.Drawing.Point(298, 545);
             this.simulationSpeed.Maximum = 50;
-            this.simulationSpeed.Minimum = 10;
+            this.simulationSpeed.Minimum = 5;
             this.simulationSpeed.Name = "simulationSpeed";
             this.simulationSpeed.Size = new System.Drawing.Size(313, 45);
             this.simulationSpeed.TabIndex = 14;
@@ -205,7 +205,7 @@
             // 
             this.moveSpeed.Location = new System.Drawing.Point(647, 545);
             this.moveSpeed.Maximum = 50;
-            this.moveSpeed.Minimum = 10;
+            this.moveSpeed.Minimum = 1;
             this.moveSpeed.Name = "moveSpeed";
             this.moveSpeed.Size = new System.Drawing.Size(336, 45);
             this.moveSpeed.TabIndex = 15;

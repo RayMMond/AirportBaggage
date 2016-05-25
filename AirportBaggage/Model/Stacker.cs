@@ -18,6 +18,8 @@ namespace AirportBaggage.Model
         private Point target;
         private bool readyForCollection;
         private Point orientLocation;
+        private double acc = 0.2;
+        private double currSpeed = 0;
         #endregion
 
         #region 构造
@@ -158,6 +160,7 @@ namespace AirportBaggage.Model
                 }
                 else
                 {
+                    currSpeed = 0;
                     TargetPointReached(this, new LogicLocationEventArgs(TargetLocation));
                 }
             }
@@ -169,6 +172,7 @@ namespace AirportBaggage.Model
                 }
                 else
                 {
+                    currSpeed = 0;
                     if (OriginalPointReached != null)
                     {
                         OriginalPointReached(this, null);
@@ -182,17 +186,31 @@ namespace AirportBaggage.Model
         #region 私有方法
         private Point GetNewLocation(Point target, Point curr)
         {
+            var a = GetDistance(target, curr);
+            var b = GetStopDistance(acc, currSpeed);
+            if (a <= b)
+            {
+                currSpeed -= acc;
+            }
+            else
+            {
+                if (currSpeed < Speed)
+                {
+                    currSpeed += acc;
+                }
+            }
+            currSpeed = currSpeed < 1 ? 1 : currSpeed;
             Point diff = target - new Size(curr);
             int x, y;
-            if (Math.Abs(diff.X) >= Speed)
+            if (Math.Abs(diff.X) >= currSpeed)
             {
                 if (diff.X >= 0)
                 {
-                    x = Speed;
+                    x = (int)currSpeed;
                 }
                 else
                 {
-                    x = -Speed;
+                    x = -(int)currSpeed;
                 }
             }
             else if (diff.X == 0)
@@ -205,15 +223,15 @@ namespace AirportBaggage.Model
             }
 
 
-            if (Math.Abs(diff.Y) >= Speed)
+            if (Math.Abs(diff.Y) >= currSpeed)
             {
                 if (diff.Y >= 0)
                 {
-                    y = Speed;
+                    y = (int)currSpeed;
                 }
                 else
                 {
-                    y = -Speed;
+                    y = -(int)currSpeed;
                 }
             }
             else if (diff.Y == 0)
@@ -228,8 +246,16 @@ namespace AirportBaggage.Model
             return curr + new Size(x, y);
         }
 
+        private double GetDistance(Point p, Point p2)
+        {
+            return Math.Sqrt(Math.Abs(p.X - p2.X) * Math.Abs(p.X - p2.X) + Math.Abs(p.Y - p2.Y) * Math.Abs(p.Y - p2.Y));
+        }
 
-
+        private double GetStopDistance(double a, double v)
+        {
+            int t = (int)(v / a);
+            return v * t - 0.5 * a * t * t;
+        }
         #endregion
     }
 }

@@ -47,8 +47,6 @@ namespace AirportBaggage
 
         private bool mistery = true;
 
-        public object StringHelp { get; private set; }
-
         #endregion
 
         #region 构造
